@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "CompSyRobotics"
+dynamic = ["version"]
+description = "RoboSymPy is a powerful Python library for solving a wide range of robotic problems using symbolic computations with SymPy. Perform tasks like forward and inverse kinematics, trajectory planning, and dynamics analysis. Benefit from the library's support for both symbolic and numeric calculations, making it a versatile tool for robotics research and applications."
+license = ""
+authors = [
+    { name = "Awais Amjad", email = "amjadawais08@gmail.com" },
+]
+dependencies = [
+    "sympy",
+]
+
+[project.urls]
+Homepage = "https://github.com/awaisamjad/CompSyRobotics"
+
+[tool.hatch.version]
+path = "compsyrobotics/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/compsyrobotics",
+]
+

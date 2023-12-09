@@ -1,0 +1,8 @@
+setup.py
+CompSyRobotics/SympyRobotics.py
+CompSyRobotics/__init__.py
+CompSyRobotics.egg-info/PKG-INFO
+CompSyRobotics.egg-info/SOURCES.txt
+CompSyRobotics.egg-info/dependency_links.txt
+CompSyRobotics.egg-info/requires.txt
+CompSyRobotics.egg-info/top_level.txt
