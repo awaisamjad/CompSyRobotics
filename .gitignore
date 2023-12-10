@@ -1,6 +1,7 @@
-/3rd book
 /main.ipynb
 /tempCodeRunnerFile.py
-/test.ipynb
-/test2.ipynb
 /__pycache__
+/token_for_password.txt
+/recovery_codes.txt
+/setup.py
+/pyproject.toml

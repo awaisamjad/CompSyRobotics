@@ -4,29 +4,27 @@ class SympyRobotics:
     def __init__(self):
         pass
     
-    def transformation_matrix(self, rotation_matrix, position_vector):
-        matrix =  Matrix([
+    def create_transformation_matrix(self, rotation_matrix: Matrix, position_vector: Matrix) -> Matrix:
+        return Matrix([
             [rotation_matrix[0], rotation_matrix[1], rotation_matrix[2], position_vector[0]],
             [rotation_matrix[3], rotation_matrix[4], rotation_matrix[5], position_vector[1]],
             [rotation_matrix[6], rotation_matrix[7], rotation_matrix[8], position_vector[2]],
             [0, 0, 0, 1],
         ])
-
-        return matrix
     
-    def inverse_transformation_matrix(self, Transformation_Matrix, Steps_to_answer=False):
-        self.r11 = Transformation_Matrix[0]
-        self.r12 = Transformation_Matrix[1]
-        self.r13 = Transformation_Matrix[2]
-        self.px =  Transformation_Matrix[3]
-        self.r21 = Transformation_Matrix[4]
-        self.r22 = Transformation_Matrix[5]
-        self.r23 = Transformation_Matrix[6]
-        self.py =  Transformation_Matrix[7]
-        self.r31 = Transformation_Matrix[8]
-        self.r32 = Transformation_Matrix[9]
-        self.r33 = Transformation_Matrix[10]
-        self.pz =  Transformation_Matrix[11]
+    def inverse_transformation_matrix(self, transformation_Matrix, steps_to_answer=False):
+        self.r11 = transformation_Matrix[0]
+        self.r12 = transformation_Matrix[1]
+        self.r13 = transformation_Matrix[2]
+        self.px =  transformation_Matrix[3]
+        self.r21 = transformation_Matrix[4]
+        self.r22 = transformation_Matrix[5]
+        self.r23 = transformation_Matrix[6]
+        self.py =  transformation_Matrix[7]
+        self.r31 = transformation_Matrix[8]
+        self.r32 = transformation_Matrix[9]
+        self.r33 = transformation_Matrix[10]
+        self.pz =  transformation_Matrix[11]
         
         self.px_new = -((self.px * self.r11) + (self.py * self.r21) + (self.pz * self.r31))
         self.py_new = -((self.px * self.r12) + (self.py * self.r22) + (self.pz * self.r32))
@@ -37,7 +35,7 @@ class SympyRobotics:
                                                 [self.r13, self.r23, self.r33, self.pz_new],
                                                 [0, 0, 0, 1]])
         
-        if Steps_to_answer:
+        if steps_to_answer:
             print("This is the general transformation matrix \n")
             pprint(Matrix([['r11', 'r12', 'r13', 'px'], 
                           ['r21', 'r22', 'r23', 'py'],
@@ -69,14 +67,28 @@ class SympyRobotics:
         else:
             return inverse_transformation_matrix
         
-    # Rotation matrix about X
-    def rotation_about_X(self, matrix, angle, as_number=False, degrees=True, round_decimal=None, significant_figures=None):
+    #~ Returns a X axis rotation matrix
+    #? Takes an angle of type float
+    def x_rotation_matrix(angle:float) -> Matrix:
+        return Matrix([
+            [1, 0, 0]
+            [0, cos(angle), -sin(angle)],
+            [0, sin(angle), -sin(angle)],
+        ])
+        
+    #~ Rotates a Matrix about the X axis - multiplies a matrix by the X axis rotation matrix
+    #? Takes the following inputs :
+    #? matrix of type Sympy Matrix 
+    #? angle of type float - better than integer
+    #TODO as_number of type bool
+    #TODO degrees
+    #TODO round_decimal
+    #TODO significant_figures 
+    def rotate_about_X(self, matrix:Matrix, angle:float, as_number=False, degrees=True, round_decimal=None, significant_figures=None):
         if degrees:
-            angle = angle * pi / 180  # Convert angle to radians if degrees is True
+            angle = angle * pi / 180.0  # Convert angle to radians if degrees is True
 
-        result = Matrix([[1, 0, 0],
-                         [0, cos(angle), -sin(angle)],
-                         [0, sin(angle), cos(angle)]]) * matrix
+        result = x_rotation_matrix(angle) * matrix
 
         if as_number:
             result = result.evalf()
@@ -88,14 +100,29 @@ class SympyRobotics:
                 result = round(result, significant_figures - int(result.is_zero))
 
         return result
+    
+    #~ Returns a Y axis rotation matrix
+    #? Takes an angle of type float
+    def y_rotation_matrix(angle:float) -> Matrix:
+        return Matrix([
+            [cos(angle), 0, -sin(angle)],
+            [0, 1, 0],
+            [sin(angle), 0 , cos(angle)]
+        ])
 
-    def rotation_about_Y(self, matrix, angle, as_number=False, degrees=True, round_decimal=None, significant_figures=None):
+    #~ Rotates a Matrix about the Y axis - multiplies a matrix by the Y axis rotation matrix
+    #? Takes the following inputs :
+    #? matrix of type Sympy Matrix
+    #? angle of type float - better than integer
+    #TODO as_number of type bool
+    #TODO degrees
+    #TODO round_decimal
+    #TODO significant_figures
+    def rotate_about_Y(self, matrix:Matrix, angle:float, as_number=False, degrees=True, round_decimal=None, significant_figures=None):
         if degrees:
-            angle = angle * pi / 180  # Convert angle to radians if degrees is True
+            angle = angle * pi / 180.0  # Convert angle to radians if degrees is True
 
-        result = Matrix([[cos(angle), 0, -sin(angle)],
-                         [0, 1, 0],
-                         [sin(angle), 0 , cos(angle)]]) * matrix
+        result = y_rotation_matrix * matrix
 
         if as_number:
             result = result.evalf()
@@ -108,9 +135,26 @@ class SympyRobotics:
 
         return result
 
-    def rotation_about_Z(self, matrix, angle, as_number=False, degrees=True, round_decimal=None, significant_figures=None):
+    #~ Returns a Z axis rotation matrix
+    #? Takes an angle of type float
+    def z_rotation_matrix(angle:float) -> Matrix:
+        return Matrix([
+            [cos(angle), -sin(angle), 0],
+            [sin(angle), cos(angle), 0],
+            [0, 0, 1]
+        ])
+        
+    #~ Rotates a Matrix about the Z axis - multiplies a matrix by the Z axis rotation matrix
+    #? Takes the following inputs :
+    #? matrix of type Sympy Matrix
+    #? angle of type float - better than integer
+    #TODO as_number of type bool
+    #TODO degrees
+    #TODO round_decimal
+    #TODO significant_figures
+    def rotate_about_Z(self, matrix:Matrix, angle:float, as_number=False, degrees=True, round_decimal=None, significant_figures=None):
         if degrees:
-            angle = angle * pi / 180  # Convert angle to radians if degrees is True
+            angle = angle * pi / 180.0  # Convert angle to radians if degrees is True
 
         result = Matrix([[cos(angle), -sin(angle), 0],
                          [sin(angle), cos(angle), 0],
@@ -127,8 +171,11 @@ class SympyRobotics:
 
         return result
     
-    
-    def forward_kinematics(self, degrees=False, DHtable=None) -> Matrix:
+    #~ Calculates the forward kinematics of a robot based on Denavit-Hartenberg parameters
+    #? Takes the following inputs :
+    #? degrees of type bool - if True, angles are assumed to be in degrees
+    #? DHtable of type Sympy Matrix - Denavit-Hartenberg parameters
+    def forward_kinematics_DH(self, degrees=False, DHtable=None) -> Matrix:
         if DHtable is not None:
             number_of_frames = DHtable.rows
         else:
@@ -188,12 +235,6 @@ class SympyRobotics:
             a_val = i[2]
             d_val = i[3]
 
-            # matrix = Matrix([
-            #     [cos(theta_val), -sin(theta_val), 0,  a_val],
-            #     [(sin(theta_val)*cos(alpha_val)), (cos(theta_val)*cos(alpha_val)), -(sin(alpha_val)), (-(sin(alpha_val)))*d_val],
-            #     [(sin(theta_val)*sin(alpha_val)), (cos(theta_val)*sin(alpha_val)), cos(alpha_val), ((cos(alpha_val))*d_val)],
-            #     [0,0,0,1],
-            # ])
             matrix = Matrix([
                 [cos(theta_val), -sin(theta_val)*cos(alpha_val), sin(theta_val)*sin(alpha_val),  a_val*cos(theta_val)],
                 [sin(theta_val),  cos(theta_val)*cos(alpha_val), -cos(theta_val)*sin(alpha_val), a_val*sin(theta_val)],
@@ -220,13 +261,27 @@ class SympyRobotics:
 # Usage
 r = SympyRobotics()
 
-theta1, theta2, theta3, theta4, theta5, theta6, a1, a2, a3, a4, a5, a6, d1, d2,  d3, d4, d5, d6, L1, L2, L3, L4, L5, L6 = symbols(
-    'theta1, theta2, theta3, theta4, theta5, theta6, a1, a2, a3, a4, a5, a6,d1, d2,  d3, d4, d5, d6, L1, L2, L3, L4, L5, L6', real=True)
-dhtable = Matrix([
-    [theta1, 0, L1, 0],
-    [theta2, 0, L2, 0],
-    [theta3, 0, L3, 0],
+
+rotation_matrix = Matrix([
+        [0.866, 0, 0],
+        [0, 0.866, 0],
+        [0, 0, 1]
+    ])
+position_vector = Matrix([
+    [10],
+    [12],
+    [1]
 ])
-transformation_matrix = r.forward_kinematics(degrees=True, DHtable=dhtable)
-transformation_matrix = simplify(transformation_matrix)
-pprint(transformation_matrix[3])
+
+result = r.create_transformation_matrix(rotation_matrix, position_vector)
+pprint(result)
+# theta1, theta2, theta3, theta4, theta5, theta6, a1, a2, a3, a4, a5, a6, d1, d2,  d3, d4, d5, d6, L1, L2, L3, L4, L5, L6 = symbols(
+#     'theta1, theta2, theta3, theta4, theta5, theta6, a1, a2, a3, a4, a5, a6,d1, d2,  d3, d4, d5, d6, L1, L2, L3, L4, L5, L6', real=True)
+# dhtable = Matrix([
+#     [theta1, 0, L1, 0],
+#     [theta2, 0, L2, 0],
+#     [theta3, 0, L3, 0],
+# ])
+# transformation_matrix = r.forward_kinematics_DH(degrees=True, DHtable=dhtable)
+# transformation_matrix = simplify(transformation_matrix)
+# pprint(transformation_matrix[3])
