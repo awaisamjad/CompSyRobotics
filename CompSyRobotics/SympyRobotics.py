@@ -122,7 +122,7 @@ class SympyRobotics:
         if degrees:
             angle = angle * pi / 180.0  # Convert angle to radians if degrees is True
 
-        result = y_rotation_matrix * matrix
+        result = y_rotation_matrix(angle) * matrix
 
         if as_number:
             result = result.evalf()
@@ -156,9 +156,7 @@ class SympyRobotics:
         if degrees:
             angle = angle * pi / 180.0  # Convert angle to radians if degrees is True
 
-        result = Matrix([[cos(angle), -sin(angle), 0],
-                         [sin(angle), cos(angle), 0],
-                         [0, 0, 1]]) * matrix
+        result = z_rotation_matrix(angle) * matrix
 
         if as_number:
             result = result.evalf()
