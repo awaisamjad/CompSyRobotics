@@ -1,4 +1,4 @@
-from sympy import Matrix, pprint, cos, sin, symbols, pi, simplify
+from sympy import Matrix, Symbol, pprint, cos, sin, symbols, pi, simplify
 from typing import Union
 class SympyRobotics:
     def __init__(self):
@@ -169,12 +169,29 @@ class SympyRobotics:
         else:
             return inverse_transformation_matrix
     
+    def create_general_DH_transformation_matrix(
+        self, 
+        theta: Union[float, int, 'Symbol'], 
+        alpha: Union[float, int, 'Symbol'], 
+        a: Union[float, int, 'Symbol'], 
+        d: Union[float, int, 'Symbol']
+        ) -> Matrix:
+        
+        return Matrix([
+            [cos(theta), -sin(theta)*cos(alpha), sin(theta)*sin(alpha),  a*cos(theta)],
+            [sin(theta),  cos(theta)*cos(alpha), -cos(theta)*sin(alpha), a*sin(theta)],
+            [0, sin(alpha), cos(alpha), d],
+            [0,0,0,1]
+        ])
     
     #~ Calculates the forward kinematics of a robot based on Denavit-Hartenberg parameters
     #? Takes the following inputs :
     #? degrees of type bool - if True, angles are assumed to be in degrees
     #? DHtable of type Sympy Matrix - Denavit-Hartenberg parameters
-    def forward_kinematics_DH(self, degrees=False, DHtable=None) -> Matrix:
+    def forward_kinematics_DH(
+        self, degrees : bool = False, DHtable : Matrix = None
+        ) -> Matrix:
+        
         if DHtable is not None:
             number_of_frames = DHtable.rows
         else:
@@ -196,7 +213,7 @@ class SympyRobotics:
                 else:
                     theta_val = float(theta) if str(theta).replace('.', '', 1).isdigit() else (theta)
                     alpha_val = float(alpha) if str(alpha).replace('.', '', 1).isdigit() else (alpha)
-
+                #~ if a_val and d_val are numbers they are converted to floats, if not they are assumed to be symbols
                 a_val = float(a) if str(a).replace('.', '', 1).isdigit() else (a)
                 d_val = float(d) if str(d).replace('.', '', 1).isdigit() else (d)
 
