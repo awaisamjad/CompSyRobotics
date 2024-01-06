@@ -1,11 +1,13 @@
 from typing import Union
+from enum import Enum
 
-def test(a: Union[int, str]) -> None:
-    if not isinstance(a, (int, str)):
-        raise TypeError('a must be int')
-    print(a)
+class Color(Enum):
+    RED = 1
+    BLUE = 2
+    GREEN = 3
+    
+def test(x: Union[int, Color]) -> None:
+    print(x)
     
 test(1)
-test('1')
-test(1.0)
-test([1, 2, 3])
+test(Color.RED)

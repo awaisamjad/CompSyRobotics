@@ -1,5 +1,6 @@
 from sympy import Matrix, Symbol, pprint, cos, sin, symbols, pi, simplify
 from typing import Union
+from enum import Enum
 class SympyRobotics:
     def __init__(self):
         pass
@@ -206,7 +207,8 @@ class SympyRobotics:
                 alpha = DHtable[i, 1]
                 a = DHtable[i, 2]
                 d = DHtable[i, 3]
-
+                #~ if theta_val and alpha_val are numbers they are converted to floats, if not they are assumed to be symbols
+                #~ if degrees is True, theta_val and alpha_val are converted to degrees
                 if degrees:
                     theta_val = (float(theta) * pi / 180) if str(theta).replace('.', '', 1).isdigit() else (theta)
                     alpha_val = (float(alpha) * pi / 180) if str(alpha).replace('.', '', 1).isdigit() else (alpha)
@@ -273,6 +275,14 @@ class SympyRobotics:
             matrices[0] = matrices[0] * matrix
         print("Resulting Product Matrix:")
         return matrices[0]
+    
+    def get_position_vector(self, transformation_matrix: Matrix) -> Matrix:
+        return Matrix([
+            [transformation_matrix[3]],
+            [transformation_matrix[7]],
+            [transformation_matrix[11]]
+        ])
+        
 
 # Usage
 r = SympyRobotics()
@@ -298,6 +308,7 @@ dhtable = Matrix([
     [theta2, 0, L2, 0],
     [theta3, 0, L3, 0],
 ])
-# transformation_matrix = r.forward_kinematics_DH(degrees=True, DHtable=dhtable)
-# transformation_matrix = simplify(transformation_matrix)
-# pprint(transformation_matrix)
+transformation_matrix = r.forward_kinematics_DH(degrees=True, DHtable=dhtable)
+transformation_matrix = simplify(transformation_matrix)
+position_vector = r.get_position_vector(transformation_matrix)
+pprint(position_vector)
